@@ -1,0 +1,15 @@
+{
+  "name": "express-router-swagger",
+  "version": "1.0.0",
+  "description": "Scaffold controllers and link to express routes from swagger spec",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Muhammad Adil Shaikh <hello@adils.me> (http://www.adils.me)",
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^3.12.0",
+    "lodash": "^4.17.11"
+  }
+}
