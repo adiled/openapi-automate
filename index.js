@@ -1,7 +1,10 @@
 const fs = require('fs')
-const yaml = require('js-yaml')
 const path = require('path')
+const yaml = require('js-yaml')
 const _ = require('lodash')
+const scaffold = require('./scaffold')
+
+const mapFilename = '.map.json'
 
 function scaffoldController(name, path) {
   console.info('# Creating controller', name)
@@ -12,64 +15,46 @@ function scaffoldController(name, path) {
     )
 }
 
-function updateMapFile(dir, data) {
-  fs.writeFileSync(dir+'/_map.json', data, {flag: 'w'})
+const defaultOptions = {
+  scaffold: true,
+  controllersDirectory: './controllers'
 }
-
 
 module.exports = {
 
-  getRouter(router, filepath, ops = {}) {
+  /* 
+  * add routes to passed router from swagger spec passed via filepath
+  */
 
-    const options = Object.assign({
-      scaffold: true,
-      controllersDirectory: './controllers'
-    }, ops)
+  get(router, filepath, ops = {}) {
+
+    const options = Object.assign(defaultOptions, ops)
 
     function getPath(path) {
       return options.controllersDirectory + '/' + path
     }
 
+    // load yaml to spec object
     try {
       var spec = yaml.safeLoad(fs.readFileSync(filepath, 'utf8'))
     } catch (e) {
       return Error(e)
     }
 
-    const endpoints = Object.keys(spec.paths).map(endpoint => {
-      return {
-        path: endpoint,
-        methods: spec.paths[endpoint]
-      }
-    })
+    // get endpoint objects from spec
+    const endpoints = Object.keys(spec.paths).map(endpoint => ({
+      path: endpoint,
+      methods: spec.paths[endpoint]
+    }))
 
-    const endpointsLite = endpoints.map(endpoint => {
-      Object.keys(endpoint.methods).forEach(method => {
-        endpoint.methods[method] = {operationId: endpoint.methods[method].operationId} 
-      })
-      return endpoint
-    })
-    
-
-    let oldEndpoints = fs.readFileSync(getPath('_map.json'), {
-      encoding: 'utf-8',
-      flag: 'a+'
-    })
-
-    if(oldEndpoints) {
-      oldEndpoints = JSON.parse(oldEndpoints)
-    } else {
-      oldEndpoints = endpointsLite
+    if(options.scaffold) {
+      scaffold.init(endpoints, options)
     }
 
-    updateMapFile(options.controllersDirectory, JSON.stringify(endpointsLite))
-
-    // create routes
+    // create routes from endpoint objects
     for(let key in endpoints) {
 
       let endpoint = endpoints[key]
-      let oldEndpoint = _.find(oldEndpoints, {path: endpoint.path})
-
       let route = router.route(endpoint.path)
 
       for(var method in endpoint.methods) {
@@ -79,31 +64,26 @@ module.exports = {
           return Error('controller not defined for ' + endpoint.path)
         }
 
-        if (oldEndpoint instanceof Object && oldEndpoint.methods[method]) {
-          let oldName = oldEndpoint.methods[method].operationId
-          if (name !== oldName) {
-            console.log('Name is same, renaming')
-            fs.renameSync(getPath(`${oldName}.js`), getPath(`${name}.js`))
-          }
+        // detect method i.e operationId change of name under same path
+        if(options.scaffold) {
+          scaffold.rename(endpoint, method)
         }
 
-        let filepath = getPath(name)
+        let controllerPath = getPath(name)
         let handler
 
+        // get controller and link to route
         try {
-          handler = require(path.resolve(filepath))
+          handler = require(path.resolve(controllerPath))
         }
-
         catch(e) {
-
-          // console.log(e)
 
           if(!options.scaffold || e.code !== 'MODULE_NOT_FOUND') {
             return Error(e)
           }
 
-          scaffoldController(name, filepath)
-          handler = require(path.resolve(filepath))
+          scaffold.new(name, controllerPath)
+          handler = require(path.resolve(controllerPath))
         }
 
         route = route[method](handler)
