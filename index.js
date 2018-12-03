@@ -55,7 +55,8 @@ module.exports = {
     for(let key in endpoints) {
 
       let endpoint = endpoints[key]
-      let route = router.route(endpoint.path)
+      endpointPath = endpoint.path.replace(/{(.*?)}/, match => ':'+match.substr(1, match.length - 2) )
+      let route = router.route(endpointPath)
 
       for(var method in endpoint.methods) {
         let name = endpoint.methods[method].operationId
