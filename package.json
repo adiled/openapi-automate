@@ -1,6 +1,6 @@
 {
   "name": "express-router-swagger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scaffold controllers and link to express routes from swagger spec",
   "main": "index.js",
   "scripts": {
