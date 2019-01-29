@@ -6,15 +6,6 @@ const scaffold = require('./scaffold')
 
 const mapFilename = '.map.json'
 
-function scaffoldController(name, path) {
-  console.info('# Creating controller', name)
-  fs.writeFileSync(
-    path+'.js',
-    `module.exports = (req, res, next) => {\n\n}`,
-    {flag: 'wx'}
-    )
-}
-
 const defaultOptions = {
   scaffold: true,
   controllersDirectory: './controllers'
@@ -70,21 +61,24 @@ module.exports = {
           scaffold.rename(endpoint, method)
         }
 
-        let controllerPath = getPath(name)
-        let handler
+        let controllerPath = path.resolve(getPath(name))
 
-        // get controller and link to route
+        if(!fs.existsSync(controllerPath+'.js')) {
+          if(options.scaffold) {
+            scaffold.new(name, controllerPath)  
+          } else {
+            console.warn(`Controller file not found for ${name}.`)
+            continue
+          }
+        }
+
+        // require controller module and link to route
+        let handler
         try {
-          handler = require(path.resolve(controllerPath))
+          handler = require(controllerPath)
         }
         catch(e) {
-
-          if(!options.scaffold || e.code !== 'MODULE_NOT_FOUND') {
-            return Error(e)
-          }
-
-          scaffold.new(name, controllerPath)
-          handler = require(path.resolve(controllerPath))
+          return Error(`<${name}> controller module failed to load: ${e}`)
         }
 
         route = route[method](handler)

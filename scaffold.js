@@ -20,8 +20,6 @@ module.exports = {
       return endpoint
     })
 
-    console.log(getPath(this.mapFilename))
-
     this.mapData = fs.readFileSync(getPath(this.mapFilename), {
       encoding: 'utf-8',
       flag: 'a+'
@@ -32,8 +30,6 @@ module.exports = {
     } else {
       this.mapData = endpointsLite
     }
-
-    console.log(this.mapData)
 
     fs.writeFileSync(options.controllersDirectory+'/'+this.mapFilename, JSON.stringify(endpointsLite), {flag: 'w'})
   },
@@ -53,7 +49,6 @@ module.exports = {
       let oldName = oldEndpoint.methods[method].operationId
       let newName = endpoint.methods[method].operationId
       if (newName !== oldName) {
-        console.log('Name is same, renaming')
         fs.renameSync(getPath(`${oldName}.js`), getPath(`${newName}.js`))
       }
     }
