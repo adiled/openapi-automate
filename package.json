@@ -1,11 +1,21 @@
 {
   "name": "express-router-swagger",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Scaffold controllers and link to express routes from swagger spec",
-  "keywords": ["swagger", "swagger 2.0", "express", "router", "api", "scaffolding", "schema", "middleware", "generator"],
+  "keywords": [
+    "swagger",
+    "swagger 2.0",
+    "express",
+    "router",
+    "api",
+    "scaffolding",
+    "schema",
+    "middleware",
+    "generator"
+  ],
   "homepage": "https://github.com/m-adilshaikh/express-router-swagger",
   "bugs": {
-    "url" : "https://github.com/m-adilshaikh/express-router-swagger/issues"
+    "url": "https://github.com/m-adilshaikh/express-router-swagger/issues"
   },
   "license": "MIT",
   "author": "Muhammad Adil Shaikh <hello@adils.me> (http://www.adils.me)",
