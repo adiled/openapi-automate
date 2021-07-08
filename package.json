@@ -33,7 +33,11 @@
     "type": "git",
     "url": "git@github.com:m-adilshaikh/openapi-automate.git"
   },
+  "bin": {
+    "oapimate": "dist/cli.js"
+  },
   "dependencies": {
+    "commander": "^8.0.0",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11"
   },
