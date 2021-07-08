@@ -1,8 +1,8 @@
-const fs = require('fs')
-const path = require('path')
-const _ = require('lodash')
+import fs from "fs";
+import path from "path";
+import _ from "lodash";
 
-module.exports = {
+export default {
 
   mapFilename: '.map.json',
 

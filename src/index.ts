@@ -1,8 +1,8 @@
-const fs = require('fs')
-const path = require('path')
-const yaml = require('js-yaml')
-const _ = require('lodash')
-const scaffold = require('./scaffold')
+import fs from 'fs'
+import path from 'path'
+import yaml from 'js-yaml'
+import _ from 'lodash'
+import scaffold from './scaffold'
 
 const mapFilename = '.map.json'
 
@@ -38,34 +38,34 @@ module.exports = {
       methods: spec.paths[endpoint]
     }))
 
-    if(options.scaffold) {
+    if (options.scaffold) {
       scaffold.init(endpoints, options)
     }
 
     // create routes from endpoint objects
-    for(let key in endpoints) {
+    for (let key in endpoints) {
 
       let endpoint = endpoints[key]
-      endpointPath = endpoint.path.replace(/{(.*?)}/, match => ':'+match.substr(1, match.length - 2) )
+      const endpointPath = endpoint.path.replace(/{(.*?)}/, match => ':' + match.substr(1, match.length - 2))
       let route = router.route(endpointPath)
 
-      for(var method in endpoint.methods) {
+      for (var method in endpoint.methods) {
         let name = endpoint.methods[method].operationId
 
-        if(name === undefined) {
+        if (name === undefined) {
           return Error('controller not defined for ' + endpoint.path)
         }
 
         // detect method i.e operationId change of name under same path
-        if(options.scaffold) {
+        if (options.scaffold) {
           scaffold.rename(endpoint, method)
         }
 
         let controllerPath = path.resolve(getPath(name))
 
-        if(!fs.existsSync(controllerPath+'.js')) {
-          if(options.scaffold) {
-            scaffold.new(name, controllerPath)  
+        if (!fs.existsSync(controllerPath + '.js')) {
+          if (options.scaffold) {
+            scaffold.new(name, controllerPath)
           } else {
             console.warn(`Controller file not found for ${name}.`)
             continue
@@ -77,7 +77,7 @@ module.exports = {
         try {
           handler = require(controllerPath)
         }
-        catch(e) {
+        catch (e) {
           return Error(`<${name}> controller module failed to load: ${e}`)
         }
 
