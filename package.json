@@ -1,34 +1,49 @@
 {
-  "name": "express-router-swagger",
-  "version": "1.0.2",
-  "description": "Scaffold controllers and link to express routes from swagger spec",
+  "name": "openapi-automate",
+  "version": "1.0.0",
+  "description": "Automate Open API-first design with code generation, stubs, validation, server agnostic with framework plugins",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rimraf build",
+    "build": "tsc --build",
+    "build:check": "node -e \"require('./dist')\"",
+    "prepublishOnly": "npm test && npm run build && npm run coveralls && npm run build && npm run build:check",
+    "test": "jest",
+    "coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls"
+  },
   "keywords": [
-    "swagger",
+    "openapi",
+    "openapi 3.0",
+    "backend",
+    "api first",
     "swagger 2.0",
-    "express",
-    "router",
-    "api",
+    "open api",
     "scaffolding",
     "schema",
     "middleware",
     "generator"
   ],
-  "homepage": "https://github.com/m-adilshaikh/express-router-swagger",
+  "homepage": "https://github.com/m-adilshaikh/openapi-automate",
   "bugs": {
-    "url": "https://github.com/m-adilshaikh/express-router-swagger/issues"
+    "url": "https://github.com/m-adilshaikh/openapi-automate/issues"
   },
   "license": "MIT",
-  "author": "Muhammad Adil Shaikh <hello@adils.me> (http://www.adils.me)",
+  "author": "Adil Shaikh <hello@adils.me> (http://www.adils.me)",
   "repository": {
     "type": "git",
-    "url": "git@github.com:m-adilshaikh/express-router-swagger.git"
-  },
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "url": "git@github.com:m-adilshaikh/openapi-automate.git"
   },
   "dependencies": {
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@types/lodash": "^4.14.171",
+    "coveralls": "^3.1.1",
+    "jest": "^27.0.6",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.5"
   }
 }
