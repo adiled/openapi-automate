@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/m-adilshaikh/openapi-automate/issues"
   },
-  "license": "MIT",
+  "license": "ISC",
   "author": "Adil Shaikh <hello@adils.me> (http://www.adils.me)",
   "repository": {
     "type": "git",
